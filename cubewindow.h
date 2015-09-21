@@ -4,6 +4,7 @@
 #include <QOpenGLWindow>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFunctions>
+#include <QTimer>
 
 class CubeWindow : public QOpenGLWindow, protected QOpenGLFunctions
 {
@@ -17,13 +18,16 @@ public:
 protected:
     virtual void initializeGL();
     virtual void paintGL();
-    // virtual void paintOverGL();
-    // virtual void paintUnderGL();
     virtual void resizeGL(int w, int h);
 
 private:
     QOpenGLShaderProgram *m_program;
     GLuint m_posAtr;
+    GLuint m_transformationMatrixUniform;
+    QTimer m_timer;
+    qint64 m_lastFrameTime;
+    float m_currentXRotationAngle;
+    float m_currentYRotationAngle;
 
 signals:
 
