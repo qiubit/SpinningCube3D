@@ -128,6 +128,10 @@ void CubeWindow::initializeGL()
     m_posAtr = m_program->attributeLocation("position");
     m_colorAtr = m_program->attributeLocation("color");
     m_transformationMatrixUniform = m_program->uniformLocation("transformationMatrix");
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+    glDepthRangef(0.0f, 1.0f);
 }
 
 void CubeWindow::paintGL()
@@ -154,7 +158,8 @@ void CubeWindow::paintGL()
     matrix.translate(0, 0, 2);
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearDepthf(1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_program->bind();
     m_program->setUniformValue(m_transformationMatrixUniform, matrix);
