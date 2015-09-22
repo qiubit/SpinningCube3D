@@ -26,11 +26,9 @@ private:
     QOpenGLShaderProgram *m_program;
     GLuint m_posAtr;
     GLuint m_colorAtr;
-    GLuint m_transformationMatrixUniform;
+    GLuint m_perspectiveMatrixUniform;
     QTimer m_timer;
     qint64 m_lastFrameTime;
-    float m_currentXRotationAngle;
-    float m_currentYRotationAngle;
 
     enum Direction {
         LEFT,

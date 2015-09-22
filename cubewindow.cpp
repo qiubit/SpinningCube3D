@@ -12,8 +12,9 @@
 #define RIGHT_EXTENT 0.5f
 #define TOP_EXTENT 0.5f
 #define BOTTOM_EXTENT -0.5f
+#define CUBE_VERTICES 4 * 36
 
-const float ROTATION_TIME = 3.0f;
+const float ROTATION_TIME = 2.5f;
 
 static GLfloat const triangleVertices[] = {
     -0.75f, 0.75f, -2.0f, 1.0f,
@@ -78,7 +79,7 @@ static GLfloat const colorData[] = {
 };
 
 // Cube's origin: (0, 0, -2)
-static GLfloat const cubeVertices[] = {
+static GLfloat cubeVertices[] = {
     // Front face
     LEFT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
     LEFT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
@@ -139,10 +140,10 @@ static const char* vertexShaderSrc =
         "attribute highp vec4 position;\n"
         "attribute highp vec4 color;\n"
         "out highp vec4 theColor;\n"
-        "uniform mat4 transformationMatrix;\n"
+        "uniform mat4 perspectiveMatrix;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = transformationMatrix * position;\n"
+        "   gl_Position = perspectiveMatrix * position;\n"
         "   theColor = color;\n"
         "}\n";
 
@@ -159,8 +160,6 @@ CubeWindow::CubeWindow(UpdateBehavior updateBehavior,
                        QWindow *parent) :
     QOpenGLWindow(updateBehavior, parent),
     m_lastFrameTime(-1),
-    m_currentXRotationAngle(0.0f),
-    m_currentYRotationAngle(0.0f),
     m_currentDirection(RIGHT)
 {
     // Works only if VSync is supported on user's computer
@@ -183,7 +182,7 @@ void CubeWindow::initializeGL()
     m_program->link();
     m_posAtr = m_program->attributeLocation("position");
     m_colorAtr = m_program->attributeLocation("color");
-    m_transformationMatrixUniform = m_program->uniformLocation("transformationMatrix");
+    m_perspectiveMatrixUniform = m_program->uniformLocation("perspectiveMatrix");
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -204,39 +203,47 @@ void CubeWindow::paintGL()
         m_lastFrameTime = timeNow;
     }
     float rotationScale = timeSinceLastFrame / (ROTATION_TIME * 1000.0f);
+    float xAngle = 0.0f, yAngle = 0.0f;
 
     switch(m_currentDirection) {
     case RIGHT:
-        m_currentYRotationAngle =
-                fmod(m_currentYRotationAngle + rotationScale * 360.0f, 360.0f);
+        yAngle = rotationScale * 360.0f;
         break;
     case LEFT:
-        m_currentYRotationAngle =
-                fmod(m_currentYRotationAngle - rotationScale * 360.0f, 360.0f);
+        yAngle = - rotationScale * 360.0f;
         break;
     case UP:
-        m_currentXRotationAngle =
-                fmod(m_currentXRotationAngle - rotationScale * 360.0f, 360.0f);
+        xAngle = - rotationScale * 360.0f;
         break;
     case DOWN:
-        m_currentXRotationAngle =
-                fmod(m_currentXRotationAngle + rotationScale * 360.0f, 360.0f);
+        xAngle = rotationScale * 360.0f;
         break;
     }
 
+    QMatrix4x4 perspectiveMatrix;
+    perspectiveMatrix.frustum(-0.75f, 0.75f, -0.75f, 0.75f, 1.0f, 3.0f);
+
     QMatrix4x4 matrix;
-    matrix.frustum(-0.75f, 0.75f, -0.75f, 0.75f, 1.0f, 3.0f);
     matrix.translate(0, 0, -2);
-    matrix.rotate(m_currentXRotationAngle, 1.0f, 0.0f, 0.0f);
-    matrix.rotate(m_currentYRotationAngle, 0.0f, 1.0f, 0.0f);
+    matrix.rotate(xAngle, 1.0f, 0.0f, 0.0f);
+    matrix.rotate(yAngle, 0.0f, 1.0f, 0.0f);
     matrix.translate(0, 0, 2);
+    for (int i = 0; i < CUBE_VERTICES; i += 4) {
+        QVector4D vector(cubeVertices[i], cubeVertices[i + 1],
+                cubeVertices[i + 2], cubeVertices[i + 3]);
+        vector = matrix * vector;
+        cubeVertices[i] = vector.x();
+        cubeVertices[i + 1] = vector.y();
+        cubeVertices[i + 2] = vector.z();
+        cubeVertices[i + 3] = vector.w();
+    }
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepthf(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_program->bind();
-    m_program->setUniformValue(m_transformationMatrixUniform, matrix);
+    m_program->setUniformValue(m_perspectiveMatrixUniform, perspectiveMatrix);
 
     m_program->enableAttributeArray(m_posAtr);
     m_program->setAttributeArray(m_posAtr, cubeVertices, 4);
