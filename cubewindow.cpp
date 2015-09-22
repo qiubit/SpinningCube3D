@@ -47,6 +47,33 @@ static GLfloat const colorData[] = {
     0.0f, 0.0f, 1.0f, 1.0f,
     0.0f, 0.0f, 1.0f, 1.0f,
     0.0f, 0.0f, 1.0f, 1.0f,
+
+    // Back face
+    1.0f, 1.0f, 0.0f, 1.0f,
+    1.0f, 1.0f, 0.0f, 1.0f,
+    1.0f, 1.0f, 0.0f, 1.0f,
+
+    1.0f, 1.0f, 0.0f, 1.0f,
+    1.0f, 1.0f, 0.0f, 1.0f,
+    1.0f, 1.0f, 0.0f, 1.0f,
+
+    // Top face
+    0.0f, 1.0f, 1.0f, 1.0f,
+    0.0f, 1.0f, 1.0f, 1.0f,
+    0.0f, 1.0f, 1.0f, 1.0f,
+
+    0.0f, 1.0f, 1.0f, 1.0f,
+    0.0f, 1.0f, 1.0f, 1.0f,
+    0.0f, 1.0f, 1.0f, 1.0f,
+
+    // Bottom face
+    1.0f, 0.0f, 1.0f, 1.0f,
+    1.0f, 0.0f, 1.0f, 1.0f,
+    1.0f, 0.0f, 1.0f, 1.0f,
+
+    1.0f, 0.0f, 1.0f, 1.0f,
+    1.0f, 0.0f, 1.0f, 1.0f,
+    1.0f, 0.0f, 1.0f, 1.0f
 };
 
 // Cube's origin: (0, 0, -2)
@@ -77,6 +104,33 @@ static GLfloat const cubeVertices[] = {
     RIGHT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
     RIGHT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
     RIGHT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
+
+    // Back face
+    LEFT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    LEFT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
+
+    LEFT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
+
+    // Top face
+    LEFT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
+    RIGHT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
+    LEFT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+
+    LEFT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
+
+    // Bottom face
+    LEFT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+    LEFT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
+
+    LEFT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
 };
 
 static const char* vertexShaderSrc =
@@ -128,6 +182,7 @@ void CubeWindow::initializeGL()
     m_posAtr = m_program->attributeLocation("position");
     m_colorAtr = m_program->attributeLocation("color");
     m_transformationMatrixUniform = m_program->uniformLocation("transformationMatrix");
+
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
@@ -169,7 +224,7 @@ void CubeWindow::paintGL()
     m_program->enableAttributeArray(m_colorAtr);
     m_program->setAttributeArray(m_colorAtr, colorData, 4);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3 * 6);
+    glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
 
     m_program->disableAttributeArray(m_posAtr);
     m_program->disableAttributeArray(m_colorAtr);
