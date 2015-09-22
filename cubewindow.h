@@ -30,6 +30,14 @@ private:
     float m_currentXRotationAngle;
     float m_currentYRotationAngle;
 
+    enum Direction {
+        LEFT,
+        RIGHT,
+        DOWN,
+        UP
+    };
+    Direction m_currentDirection;
+
 signals:
 
 public slots:

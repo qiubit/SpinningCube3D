@@ -159,7 +159,8 @@ CubeWindow::CubeWindow(UpdateBehavior updateBehavior,
     QOpenGLWindow(updateBehavior, parent),
     m_lastFrameTime(-1),
     m_currentXRotationAngle(0.0f),
-    m_currentYRotationAngle(0.0f)
+    m_currentYRotationAngle(0.0f),
+    m_currentDirection(RIGHT)
 {
     // Works only if VSync is supported on user's computer
     connect(&m_timer, SIGNAL(timeout()), SLOT(update()));
@@ -203,13 +204,30 @@ void CubeWindow::paintGL()
     }
     float rotationScale = timeSinceLastFrame / (ROTATION_TIME * 1000.0f);
 
-    m_currentYRotationAngle =
-            fmod(m_currentYRotationAngle + rotationScale * 360.0f, 360.0f);
+    switch(m_currentDirection) {
+    case RIGHT:
+        m_currentYRotationAngle =
+                fmod(m_currentYRotationAngle + rotationScale * 360.0f, 360.0f);
+        break;
+    case LEFT:
+        m_currentYRotationAngle =
+                fmod(m_currentYRotationAngle - rotationScale * 360.0f, 360.0f);
+        break;
+    case UP:
+        m_currentXRotationAngle =
+                fmod(m_currentXRotationAngle - rotationScale * 360.0f, 360.0f);
+        break;
+    case DOWN:
+        m_currentXRotationAngle =
+                fmod(m_currentXRotationAngle + rotationScale * 360.0f, 360.0f);
+        break;
+    }
 
     QMatrix4x4 matrix;
     matrix.frustum(-0.75f, 0.75f, -0.75f, 0.75f, 1.0f, 3.0f);
     matrix.translate(0, 0, -2);
-    matrix.rotate(m_currentYRotationAngle, 1.0f, 1.0f, 0.0f);
+    matrix.rotate(m_currentXRotationAngle, 1.0f, 0.0f, 0.0f);
+    matrix.rotate(m_currentYRotationAngle, 0.0f, 1.0f, 0.0f);
     matrix.translate(0, 0, 2);
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
