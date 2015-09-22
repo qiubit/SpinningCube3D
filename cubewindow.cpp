@@ -12,12 +12,41 @@
 #define TOP_EXTENT 0.5f
 #define BOTTOM_EXTENT -0.5f
 
-const float ROTATION_TIME = 10.0f;
+const float ROTATION_TIME = 3.0f;
 
 static GLfloat const triangleVertices[] = {
     -0.75f, 0.75f, -2.0f, 1.0f,
     -0.75f, -0.75f, -2.0f, 1.0f,
     0.75f, -0.75f, -2.0f, 1.0f
+};
+
+static GLfloat const colorData[] = {
+    // Front face
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+
+    // Left face
+    0.0f, 1.0f, 0.0f, 1.0f,
+    0.0f, 1.0f, 0.0f, 1.0f,
+    0.0f, 1.0f, 0.0f, 1.0f,
+
+    0.0f, 1.0f, 0.0f, 1.0f,
+    0.0f, 1.0f, 0.0f, 1.0f,
+    0.0f, 1.0f, 0.0f, 1.0f,
+
+    // Right face
+    0.0f, 0.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f, 1.0f,
+
+    0.0f, 0.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f, 1.0f,
 };
 
 // Cube's origin: (0, 0, -2)
@@ -52,21 +81,23 @@ static GLfloat const cubeVertices[] = {
 
 static const char* vertexShaderSrc =
         "#version 330\n"
-        "layout(location = 0) in vec4 position;\n"
+        "attribute highp vec4 position;\n"
+        "attribute highp vec4 color;\n"
+        "out highp vec4 theColor;\n"
         "uniform mat4 transformationMatrix;\n"
         "void main()\n"
         "{\n"
         "   gl_Position = transformationMatrix * position;\n"
+        "   theColor = color;\n"
         "}\n";
 
 static const char* fragmentShaderSrc =
         "#version 330\n"
-        "out vec4 outputColor;\n"
+        "in highp vec4 theColor;\n"
+        "out highp vec4 outputColor;\n"
         "void main()\n"
         "{\n"
-        "float lerpValue = gl_FragCoord.y / 500.0f;\n"
-        "outputColor = mix(vec4(1.0f, 1.0f, 1.0f, 1.0f),\n"
-        "                  vec4(0.2f, 0.2f, 0.2f, 1.0f), lerpValue);\n"
+        "outputColor = 0.6f * theColor;\n"
         "}\n";
 
 CubeWindow::CubeWindow(UpdateBehavior updateBehavior,
@@ -95,6 +126,7 @@ void CubeWindow::initializeGL()
     m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSrc);
     m_program->link();
     m_posAtr = m_program->attributeLocation("position");
+    m_colorAtr = m_program->attributeLocation("color");
     m_transformationMatrixUniform = m_program->uniformLocation("transformationMatrix");
 }
 
@@ -116,7 +148,7 @@ void CubeWindow::paintGL()
             fmod(m_currentYRotationAngle + rotationScale * 360.0f, 360.0f);
 
     QMatrix4x4 matrix;
-    matrix.frustum(-1, 1, -1, 1, 1, 3);
+    matrix.frustum(-0.75f, 0.75f, -0.75f, 0.75f, 1.25f, 2.75f);
     matrix.translate(0, 0, -2);
     matrix.rotate(m_currentYRotationAngle, 0.0f, 1.0f, 0.0f);
     matrix.translate(0, 0, 2);
@@ -129,10 +161,13 @@ void CubeWindow::paintGL()
 
     m_program->enableAttributeArray(m_posAtr);
     m_program->setAttributeArray(m_posAtr, cubeVertices, 4);
+    m_program->enableAttributeArray(m_colorAtr);
+    m_program->setAttributeArray(m_colorAtr, colorData, 4);
 
     glDrawArrays(GL_TRIANGLES, 0, 3 * 6);
 
     m_program->disableAttributeArray(m_posAtr);
+    m_program->disableAttributeArray(m_colorAtr);
 
     m_program->release();
 }

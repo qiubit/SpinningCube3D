@@ -23,6 +23,7 @@ protected:
 private:
     QOpenGLShaderProgram *m_program;
     GLuint m_posAtr;
+    GLuint m_colorAtr;
     GLuint m_transformationMatrixUniform;
     QTimer m_timer;
     qint64 m_lastFrameTime;
