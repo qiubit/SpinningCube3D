@@ -170,7 +170,9 @@ CubeWindow::CubeWindow(UpdateBehavior updateBehavior,
 
 void CubeWindow::resizeGL(int w, int h)
 {
-    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+    GLsizei screenSize = w < h ? w : h;
+    glViewport((w - screenSize) / 2, (h - screenSize) / 2,
+               (GLsizei) screenSize, (GLsizei) screenSize);
 }
 
 void CubeWindow::initializeGL()

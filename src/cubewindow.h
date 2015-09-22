@@ -14,7 +14,7 @@ class CubeWindow : public QOpenGLWindow, protected QOpenGLFunctions
 public:
     explicit CubeWindow(UpdateBehavior updateBehavior = NoPartialUpdate,
                         QWindow * parent = 0);
-    //~CubeWindow();
+    // ~CubeWindow();
 
 protected:
     virtual void initializeGL();
