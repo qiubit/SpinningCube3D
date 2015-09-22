@@ -207,9 +207,9 @@ void CubeWindow::paintGL()
             fmod(m_currentYRotationAngle + rotationScale * 360.0f, 360.0f);
 
     QMatrix4x4 matrix;
-    matrix.frustum(-0.75f, 0.75f, -0.75f, 0.75f, 1.25f, 2.75f);
+    matrix.frustum(-0.75f, 0.75f, -0.75f, 0.75f, 1.0f, 3.0f);
     matrix.translate(0, 0, -2);
-    matrix.rotate(m_currentYRotationAngle, 0.0f, 1.0f, 0.0f);
+    matrix.rotate(m_currentYRotationAngle, 1.0f, 1.0f, 0.0f);
     matrix.translate(0, 0, 2);
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
