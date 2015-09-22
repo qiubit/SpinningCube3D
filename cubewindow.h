@@ -5,6 +5,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFunctions>
 #include <QTimer>
+#include <QKeyEvent>
 
 class CubeWindow : public QOpenGLWindow, protected QOpenGLFunctions
 {
@@ -19,6 +20,7 @@ protected:
     virtual void initializeGL();
     virtual void paintGL();
     virtual void resizeGL(int w, int h);
+    virtual void keyPressEvent(QKeyEvent *event);
 
 private:
     QOpenGLShaderProgram *m_program;

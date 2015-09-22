@@ -1,6 +1,7 @@
 #include <QString>
 #include <QtMath>
 #include <QDateTime>
+#include <QGuiApplication>
 #include <cmath>
 
 #include "cubewindow.h"
@@ -248,4 +249,26 @@ void CubeWindow::paintGL()
     m_program->disableAttributeArray(m_colorAtr);
 
     m_program->release();
+}
+
+void CubeWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key())
+    {
+    case (Qt::Key_Escape):
+        QGuiApplication::quit();
+        break;
+    case (Qt::Key_Right):
+        m_currentDirection = RIGHT;
+        break;
+    case (Qt::Key_Left):
+        m_currentDirection = LEFT;
+        break;
+    case (Qt::Key_Up):
+        m_currentDirection = UP;
+        break;
+    case (Qt::Key_Down):
+        m_currentDirection = DOWN;
+        break;
+    }
 }
