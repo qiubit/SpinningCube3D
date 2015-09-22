@@ -5,12 +5,49 @@
 
 #include "cubewindow.h"
 
-const float ROTATION_TIME = 2.0f;
+#define FRONT_EXTENT -1.5f
+#define BACK_EXTENT -2.5f
+#define LEFT_EXTENT -0.5f
+#define RIGHT_EXTENT 0.5f
+#define TOP_EXTENT 0.5f
+#define BOTTOM_EXTENT -0.5f
+
+const float ROTATION_TIME = 10.0f;
 
 static GLfloat const triangleVertices[] = {
     -0.75f, 0.75f, -2.0f, 1.0f,
     -0.75f, -0.75f, -2.0f, 1.0f,
     0.75f, -0.75f, -2.0f, 1.0f
+};
+
+// Cube's origin: (0, 0, -2)
+static GLfloat const cubeVertices[] = {
+    // Front face
+    LEFT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
+    LEFT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+
+    LEFT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
+    RIGHT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+
+    // Left face
+    LEFT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
+    LEFT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    LEFT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+
+    LEFT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    LEFT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+    LEFT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
+
+    // Right face
+    RIGHT_EXTENT, TOP_EXTENT, FRONT_EXTENT, 1.0f,
+    RIGHT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+
+    RIGHT_EXTENT, TOP_EXTENT, BACK_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, FRONT_EXTENT, 1.0f,
+    RIGHT_EXTENT, BOTTOM_EXTENT, BACK_EXTENT, 1.0f,
 };
 
 static const char* vertexShaderSrc =
@@ -91,9 +128,9 @@ void CubeWindow::paintGL()
     m_program->setUniformValue(m_transformationMatrixUniform, matrix);
 
     m_program->enableAttributeArray(m_posAtr);
-    m_program->setAttributeArray(m_posAtr, triangleVertices, 4);
+    m_program->setAttributeArray(m_posAtr, cubeVertices, 4);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 3 * 6);
 
     m_program->disableAttributeArray(m_posAtr);
 
