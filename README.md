@@ -19,13 +19,14 @@ Installation
 The easiest way to compile SpinningCube3D would be to import SpinningCube3D.pro
 into QtCreator. You can also build it using GNU Make using the following commands:
 
-``qmake -o SpinningCube3D.pro
-make debug``
+```qmake -o SpinningCube3D.pro
+make debug```
 
 This should create the executable in `debug` folder.
 
 Controls
 --------
 
-Arrow keys - rotate cube
-Escape - exit application
+`Arrow keys` - rotate cube
+
+`Escape` - exit application
