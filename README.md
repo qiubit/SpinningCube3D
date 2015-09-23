@@ -8,6 +8,8 @@ I made this project when trying to understand how OpenGL pipeline works.
 If you're interested in seeing tutorial based on this, write me an e-mail
 at qiubit.bugzilla@gmail.com
 
+![screen](http://i.imgur.com/KJICZfj.png)
+
 Requirements
 ------------
 
